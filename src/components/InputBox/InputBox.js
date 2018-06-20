@@ -8,19 +8,8 @@ class InputBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
-      avatar: this.props.avatar,
-      username: this.props.username
+      value: ''
     };
-  }
-
-  componentDidUpdate(prevProps) {
-    // update states if props changed
-    if (prevProps.avatar !== this.props.avatar || prevProps.username !== this.props.username)
-      this.setState({
-        avatar: this.props.avatar,
-        username: this.props.username
-      })
   }
 
   handleChange = (event) => this.setState({ value: event.target.value })
@@ -32,7 +21,9 @@ class InputBox extends React.Component {
   }
 
   render() {
-    const { value, avatar, username } = this.state;
+    const { avatar, username } = this.props;
+    const { value } = this.state;
+
     return (
       <div className='input-box'>
         <Label className='label' as='a' image onClick={() => this.props.openModal()}>

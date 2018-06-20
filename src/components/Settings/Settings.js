@@ -11,8 +11,7 @@ class Settings extends React.Component {
     this.state = {
       value: '',
       username: '',
-      avatar: this.props.avatar,
-      open: true
+      avatar: this.props.avatar
     };
   }
   handleChange = (event) => this.setState({ username: event.target.value });
@@ -24,11 +23,11 @@ class Settings extends React.Component {
   }
 
   render() {
-    const { username, open, avatar } = this.state;
+    const { username, avatar } = this.state;
     const { avatarList } = this.props;
 
     return (
-      <Modal open={open} onClose={() => this.props.closeModal()}>
+      <Modal open={true} onClose={() => this.props.closeModal()}>
         <Modal.Header >Settings</Modal.Header>
         <Modal.Content image>
           <Image id='img' wrapped size='medium' verticalAlign='middle' circular={true} src={avatar} />

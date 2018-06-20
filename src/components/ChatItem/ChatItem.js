@@ -4,32 +4,16 @@ import { List, Image } from 'semantic-ui-react'
 
 // ChatItem - represting single message
 // props.background ? current session user's message : other users message 
-class ChatItem extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      avatar: this.props.dto.avatar,
-      username: this.props.dto.username,
-      msg: this.props.dto.text,
-      background: this.props.background
-    };
-  }
-
-  render() {
-    const { username, avatar, msg } = this.state;
-
-    return (
-      <List.Item style={{ background: this.props.background ? '#f7f7f7' : '' }}>
-        <List.Content>
-          <Image style={{ float: 'left' }} avatar src={avatar} />
-          <div className='chat-item'>
-            <b>{username}:</b> {msg}
-          </div>
-        </List.Content>
-      </List.Item>
-    );
-  }
-}
+const ChatItem = (props) => {
+  return (<List.Item style={{ background: props.background ? '#f7f7f7' : '' }}>
+    <List.Content>
+    <div className='chat-item'>
+    <Image style={{ float: 'left' }} avatar src={props.dto.avatar} />
+        <b>{props.dto.username}:</b> {props.dto.text}
+      </div>
+    </List.Content>
+  </List.Item>
+);}
 
 export default ChatItem;

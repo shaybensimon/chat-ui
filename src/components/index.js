@@ -9,8 +9,8 @@ import styled from 'styled-components';
 import Chat from './Chat';
 import Settings from './Settings';
 import InputBox from './InputBox';
-import io from "socket.io-client";
-
+import io from 'socket.io-client';
+import uuidv4 from 'uuid/v4';
 const Logo = styled.div`
       img{
         margin-left: auto;
@@ -24,11 +24,11 @@ class App extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      sessionId: this.generateId(),
+      sessionId: uuidv4(),
       username: 'IM.Spoty',
       avatar: spotimAvatar,
       messages: [],
-      chatWidth: 1.7 * (window.innerHeight / 2),
+      chatWidth: 1.7 * (window.innerHeight / 2), // For future responsive
       chatHeight: window.innerHeight / 2,
       openModal: false,
       avatarList: this.generateAvatars()
@@ -101,9 +101,6 @@ class App extends React.PureComponent {
     }
   }
 
-  // Generate unique id for session - for highlighting user messages
-  generateId = () => Math.floor(Math.random() * 899999 + 100000);
-
   generateAvatars = () => 
     [
       'http://react.semantic-ui.com/assets/images/avatar/large/jenny.jpg',
@@ -125,7 +122,7 @@ class App extends React.PureComponent {
   closeModal = () => this.setState({ openModal: false })
 
   render() {
-    const { chatWidth, chatHeight, openModal, username, avatar, sessionId, avatarList } = this.state;
+    const { chatWidth, chatHeight, openModal, username, avatar, sessionId, avatarList, messages } = this.state;
 
     return (
       <div>
@@ -139,7 +136,7 @@ class App extends React.PureComponent {
               <Logo> <Image size={'tiny'} src={logo} /> </Logo>
           </Container>
           <div className={'main-content'} id='main-content' style={{ height: chatHeight }}>
-            <Chat messages={this.state.messages} sessionId={sessionId} />
+            <Chat messages={messages} sessionId={sessionId} />
           </div>
           <footer className='footer' id='footer'>
             <InputBox onSend={this.sendMessage} avatar={avatar} username={username} openModal={() => this.openModal()} />
