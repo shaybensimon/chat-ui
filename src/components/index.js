@@ -1,31 +1,29 @@
-
 //This is your top level React component, you may change everything
 
-import React from 'react'
-import logo from '../assets/spotim-logo.jpg'
-import spotimAvatar from '../assets/spotim-avatar.png'
-import { Header, Container, Image } from 'semantic-ui-react'
-import styled from 'styled-components';
-import Chat from './Chat';
-import Settings from './Settings';
-import InputBox from './InputBox';
-import io from 'socket.io-client';
-import uuidv4 from 'uuid/v4';
+import React from "react";
+import logo from "../assets/spotim-logo.jpg";
+import spotimAvatar from "../assets/spotim-avatar.png";
+import { Header, Container, Image } from "semantic-ui-react";
+import styled from "styled-components";
+import Chat from "./Chat";
+import Settings from "./Settings";
+import InputBox from "./InputBox";
+import io from "socket.io-client";
+import uuidv4 from "uuid/v4";
 const Logo = styled.div`
-      img{
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 15px;      
-      }
-      
+  img {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+  }
 `;
 
 class App extends React.PureComponent {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       sessionId: uuidv4(),
-      username: 'IM.Spoty',
+      username: "IM.Spoty",
       avatar: spotimAvatar,
       messages: [],
       chatWidth: 1.7 * (window.innerHeight / 2), // For future responsive
@@ -36,7 +34,7 @@ class App extends React.PureComponent {
 
     this.openAndConnect();
 
-    this.event_name = 'spotim/chat';
+    this.event_name = "spotim/chat";
     this.sendMessage = this.sendMessage.bind(this);
   }
 
@@ -48,20 +46,20 @@ class App extends React.PureComponent {
     //connecting to Socket.IO chat server
     this.socket = io("https://spotim-demo-chat-server.herokuapp.com");
 
-    this.socket.on("connect", function () {
+    this.socket.on("connect", function() {
       console.log("connected to chat server!");
     });
 
-    this.socket.on("disconnect", function () {
+    this.socket.on("disconnect", function() {
       console.log("disconnected from chat server!");
     });
 
     // Listen to new income messages - on income add to state.messages
-    this.socket.on('spotim/chat', (data) => {
+    this.socket.on("spotim/chat", data => {
       this.setState({
         messages: [...this.state.messages, data]
-      })
-      console.log('recived new message:');
+      });
+      console.log("recived new message:");
       console.log(data);
     });
   }
@@ -70,76 +68,104 @@ class App extends React.PureComponent {
   welcomeUser() {
     let welcomeMsg = {
       avatar: spotimAvatar,
-      username: 'Bot.IM',
-      text: 'Welcome to Spot.IM chat!',
+      username: "Bot.IM",
+      text: "Welcome to Spot.IM chat!",
       sessionid: this.state.sessionId,
-      timestamp: new Date().toLocaleTimeString('it-IT')
+      timestamp: new Date().toLocaleTimeString("it-IT")
     };
     let setMsg = {
       avatar: spotimAvatar,
-      username: 'Bot.IM',
-      text: 'Please choose Username and Avatar by clicking the ticket above the \'New Message\' field.',
+      username: "Bot.IM",
+      text:
+        "Please choose Username and Avatar by clicking the ticket above the 'New Message' field.",
       sessionid: this.state.sessionId,
-      timestamp: new Date().toLocaleTimeString('it-IT')
+      timestamp: new Date().toLocaleTimeString("it-IT")
     };
     this.setState({ messages: [...this.state.messages, welcomeMsg, setMsg] });
   }
 
   sendMessage(msg) {
-    if (msg !== '') {
+    if (msg !== "") {
       console.log(`send message:  ${msg}`);
       let name = this.event_name;
-      this.socket.emit(name,
-        {
-          avatar: this.state.avatar,
-          username: this.state.username,
-          text: msg,
-          sessionid: this.state.sessionId,
-          timestamp: new Date().toLocaleTimeString('it-IT')
-        }
-      );
+      this.socket.emit(name, {
+        avatar: this.state.avatar,
+        username: this.state.username,
+        text: msg,
+        sessionid: this.state.sessionId,
+        timestamp: new Date().toLocaleTimeString("it-IT")
+      });
     }
   }
 
-  generateAvatars = () => 
-    [
-      'http://react.semantic-ui.com/assets/images/avatar/large/jenny.jpg',
-      'http://react.semantic-ui.com/assets/images/avatar/large/helen.jpg',
-      'http://react.semantic-ui.com/assets/images/avatar/large/christian.jpg',
-      'http://react.semantic-ui.com/assets/images/avatar/large/daniel.jpg',
-      'http://react.semantic-ui.com/assets/images/avatar/large/stevie.jpg',
-      'http://react.semantic-ui.com/assets/images/avatar/large/elliot.jpg',
-    ]
+  generateAvatars = () => [
+    "http://react.semantic-ui.com/images/avatar/large/jenny.jpg",
+    "http://react.semantic-ui.com/images/avatar/large/helen.jpg",
+    "http://react.semantic-ui.com/images/avatar/large/christian.jpg",
+    "http://react.semantic-ui.com/images/avatar/large/daniel.jpg",
+    "http://react.semantic-ui.com/images/avatar/large/stevie.jpg",
+    "http://react.semantic-ui.com/images/avatar/large/elliot.jpg"
+  ];
 
-  setUserValues = (username, avatar) => 
-    this.setState({ 
-      username: username.length > 0 ? username : this.state.username, 
-      avatar: avatar 
-    })
+  setUserValues = (username, avatar) =>
+    this.setState({
+      username: username.length > 0 ? username : this.state.username,
+      avatar: avatar
+    });
 
-  openModal = () => this.setState({ openModal: true })
+  openModal = () => this.setState({ openModal: true });
 
-  closeModal = () => this.setState({ openModal: false })
+  closeModal = () => this.setState({ openModal: false });
 
   render() {
-    const { chatWidth, chatHeight, openModal, username, avatar, sessionId, avatarList, messages } = this.state;
+    const {
+      chatWidth,
+      chatHeight,
+      openModal,
+      username,
+      avatar,
+      sessionId,
+      avatarList,
+      messages
+    } = this.state;
 
     return (
       <div>
-        {openModal && 
-          (<Settings setUserValues={(username, avatar) => this.setUserValues(username, avatar)}
-                      closeModal={() => this.closeModal()} avatarList={avatarList}
-                      username={username} avatar={avatar} />)}
-        <div id='app' className='site' style={{ width: chatWidth }}>
-          <Container className='spotim-header'>
-            <Header size='huge' className='spotim-title'>Welcome to the Spot.IM Chat app</Header>
-              <Logo> <Image size={'tiny'} src={logo} /> </Logo>
+        {openModal && (
+          <Settings
+            setUserValues={(username, avatar) =>
+              this.setUserValues(username, avatar)
+            }
+            closeModal={() => this.closeModal()}
+            avatarList={avatarList}
+            username={username}
+            avatar={avatar}
+          />
+        )}
+        <div id="app" className="site" style={{ width: chatWidth }}>
+          <Container className="spotim-header">
+            <Header size="huge" className="spotim-title">
+              Welcome to the Spot.IM Chat app
+            </Header>
+            <Logo>
+              {" "}
+              <Image size={"tiny"} src={logo} />{" "}
+            </Logo>
           </Container>
-          <div className={'main-content'} id='main-content' style={{ height: chatHeight }}>
+          <div
+            className={"main-content"}
+            id="main-content"
+            style={{ height: chatHeight }}
+          >
             <Chat messages={messages} sessionId={sessionId} />
           </div>
-          <footer className='footer' id='footer'>
-            <InputBox onSend={this.sendMessage} avatar={avatar} username={username} openModal={() => this.openModal()} />
+          <footer className="footer" id="footer">
+            <InputBox
+              onSend={this.sendMessage}
+              avatar={avatar}
+              username={username}
+              openModal={() => this.openModal()}
+            />
           </footer>
         </div>
       </div>
